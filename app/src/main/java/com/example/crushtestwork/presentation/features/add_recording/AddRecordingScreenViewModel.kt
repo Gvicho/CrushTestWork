@@ -44,6 +44,7 @@ class AddRecordingScreenViewModel(
     }
 
     private fun addRecordingAndGoBack() = viewModelScope.launch {
+        doLoading(true)
         addRecordingUseCase(
             RecordingItem(
                 id = null,
@@ -55,12 +56,21 @@ class AddRecordingScreenViewModel(
         }.onFail {
             makeError(it.name)
         }
+        doLoading(false)
     }
 
     private fun makeError(error: String?) {
         updateState {
             copy(
                 isError = error
+            )
+        }
+    }
+
+    private fun doLoading(isLoading: Boolean) {
+        updateState {
+            copy(
+                isLoading = isLoading
             )
         }
     }

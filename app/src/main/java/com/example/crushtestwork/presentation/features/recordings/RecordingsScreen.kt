@@ -30,8 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -40,7 +43,6 @@ import androidx.navigation.compose.composable
 import com.example.crushtestwork.R
 import com.example.crushtestwork.domain.model.RecordingItem
 import com.example.crushtestwork.presentation.common.ui.theme.CrushTestWorkTheme
-import com.example.crushtestwork.presentation.features.add_recording.contract.AddRecordingScreenEvent
 import com.example.crushtestwork.presentation.features.recordings.contract.RecordingsScreenEffect
 import com.example.crushtestwork.presentation.features.recordings.contract.RecordingsScreenEvent
 import com.example.crushtestwork.presentation.features.recordings.contract.RecordingsScreenState
@@ -145,8 +147,7 @@ fun RecordingsScreen(
     }
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+            .fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -164,12 +165,23 @@ fun RecordingsScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .background(Color.Black)
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 10.dp)
             ) {
+                item {
+                    Text(
+                        text = "Recordings",
+                        modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 30.dp),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight(400),
+                        fontSize = 28.sp,
+                        color = Color.Magenta
+                    )
+                }
                 items(state.listOfRecordings) {
                     RecordingItem(
                         recordingItem = it,

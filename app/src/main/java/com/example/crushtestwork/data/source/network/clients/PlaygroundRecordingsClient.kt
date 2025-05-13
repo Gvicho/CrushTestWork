@@ -15,6 +15,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -83,6 +84,33 @@ class PlaygroundRecordingsClient(
                 getNetworkError(it)
             },
             mapper = { it.success }
+        )
+    }
+
+    override suspend fun editRecording(editedRecording: RecordingItem): ResultFace<Unit, NetworkError> {
+        return handle.safeApiCall<Unit, Unit, NetworkError>(
+            call = {
+                httpClient.put(
+                    urlString = TestEndpointProvider.getUrl()
+                ) {
+                    url {
+                        parameters.append("path", "update")
+                        parameters.append("id", editedRecording.id ?: "")
+                    }
+                    setBody(
+                        editedRecording
+                            .toDto()
+                            .copy(
+                                id = null // to not send id parameter in body, I guess this is not necesery but...
+                            )
+                    )
+                    contentType(ContentType.Application.Json)
+                }
+            },
+            getError = {
+                getNetworkError(it)
+            },
+            mapper = { }
         )
     }
 }

@@ -2,7 +2,9 @@ package com.example.crushtestwork.presentation.features.recordings
 
 import androidx.lifecycle.viewModelScope
 import com.example.crushtestwork.domain.core.onSuccess
-import com.example.crushtestwork.domain.usecase.AddRecordingUseCase
+import com.example.crushtestwork.domain.model.RecordingItem
+import com.example.crushtestwork.domain.usecase.DeleteRecordingUseCase
+import com.example.crushtestwork.domain.usecase.EditRecordingUseCase
 import com.example.crushtestwork.domain.usecase.GetRecordingsListUseCase
 import com.example.crushtestwork.presentation.common.base.BaseViewModel
 import com.example.crushtestwork.presentation.features.recordings.contract.RecordingsScreenEffect
@@ -10,14 +12,12 @@ import com.example.crushtestwork.presentation.features.recordings.contract.Recor
 import com.example.crushtestwork.presentation.features.recordings.contract.RecordingsScreenState
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
-import com.example.crushtestwork.domain.model.RecordingItem
-import com.example.crushtestwork.domain.usecase.DeleteRecordingUseCase
-import kotlinx.coroutines.delay
 
 // using MVI Presentation layer architecture. (MVVM on steroids :), easier to write unit test,refactor and debug )
 class RecordingsScreenViewModel(
     private val getRecordingsListUseCase: GetRecordingsListUseCase,
-    private val deleteRecordingUseCase: DeleteRecordingUseCase
+    private val deleteRecordingUseCase: DeleteRecordingUseCase,
+    private val editRecordingUseCase: EditRecordingUseCase
 ) : BaseViewModel<RecordingsScreenState, RecordingsScreenEvent, RecordingsScreenEffect>(
         initialState = RecordingsScreenState()
     ) {
@@ -39,10 +39,14 @@ class RecordingsScreenViewModel(
     }
 
     private fun saveAndCloseModifyingDialog() = viewModelScope.launch {
-        doDialogLoading(true)
-        delay(1000)
-        doDialogLoading(false)
-        closeModifyDialog()
+        viewState.recordingToEdit?.let {
+            doDialogLoading(true)
+            editRecordingUseCase(it).onSuccess {
+                closeModifyDialog()
+                loadRecordings() // to auto refresh
+            }
+            doDialogLoading(false)
+        }
     }
 
     private fun inputTitle(text: String) {

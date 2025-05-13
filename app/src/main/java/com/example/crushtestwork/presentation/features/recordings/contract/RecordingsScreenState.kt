@@ -9,5 +9,7 @@ import kotlinx.collections.immutable.persistentListOf
 // so if this is saved in view model it will survive and clients work on screen wont be lost
 data class RecordingsScreenState(
     val isLoading: Boolean = false,
-    val listOfRecordings: PersistentList<RecordingItem> = persistentListOf()
+    val listOfRecordings: PersistentList<RecordingItem> = persistentListOf(),
+    val recordingToEdit: RecordingItem? = null,
+    val isDialogLoading: Boolean = false
 )

@@ -35,8 +35,7 @@ fun MainNavHost() {
             recordingsScreen(
                 onOpenNewRecordingScreen = {
                     navController.navigate(AddRecordingsScreen)
-                },
-                onModifyNewRecordingScreen = {  }
+                }
             )
 
             addRecordingScreen(

@@ -11,10 +11,12 @@ import com.example.crushtestwork.presentation.features.recordings.contract.Recor
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import com.example.crushtestwork.domain.model.RecordingItem
+import com.example.crushtestwork.domain.usecase.DeleteRecordingUseCase
 
 // using MVI Presentation layer architecture. (MVVM on steroids :), easier to write unit test,refactor and debug )
 class RecordingsScreenViewModel(
-    private val getRecordingsListUseCase: GetRecordingsListUseCase
+    private val getRecordingsListUseCase: GetRecordingsListUseCase,
+    private val deleteRecordingUseCase: DeleteRecordingUseCase
 ) : BaseViewModel<RecordingsScreenState, RecordingsScreenEvent, RecordingsScreenEffect>(
         initialState = RecordingsScreenState()
     ) {
@@ -27,6 +29,7 @@ class RecordingsScreenViewModel(
             RecordingsScreenEvent.OnAddRecordingClicked -> makeOpenCreateNewRecordingScreenEffect()
             is RecordingsScreenEvent.OnModifyRecordingClicked -> makeOpenModifyRecordingScreenEffect(event.id)
             RecordingsScreenEvent.OnRefresh -> loadRecordings()
+            is RecordingsScreenEvent.OnDeleteRecordingClicked -> deleteRecording(event.id)
         }
     }
 
@@ -40,6 +43,12 @@ class RecordingsScreenViewModel(
             }
         }
         doLoading(false)
+    }
+
+    private fun deleteRecording(id: String) = viewModelScope.launch {
+        deleteRecordingUseCase(id).onSuccess {
+            loadRecordings() // to reload
+        }
     }
 
     private fun doLoading(isLoading: Boolean) {

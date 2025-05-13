@@ -5,4 +5,5 @@ sealed interface RecordingsScreenEvent {
     data object OnRefresh : RecordingsScreenEvent
     data object OnAddRecordingClicked : RecordingsScreenEvent
     data class OnModifyRecordingClicked(val id: String) : RecordingsScreenEvent
+    data class OnDeleteRecordingClicked(val id: String) : RecordingsScreenEvent
 }

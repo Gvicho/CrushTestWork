@@ -4,6 +4,7 @@ import com.example.crushtestwork.data.source.network.endpointProvider.TestEndpoi
 import com.example.crushtestwork.data.source.network.handler.Handler
 import com.example.crushtestwork.data.source.network.mapper.toDomain
 import com.example.crushtestwork.data.source.network.mapper.toDto
+import com.example.crushtestwork.data.source.network.model.DeleteRecordingResponseDto
 import com.example.crushtestwork.data.source.network.model.RecordingItemDto
 import com.example.crushtestwork.domain.client.RecordingsClient
 import com.example.crushtestwork.domain.core.ResultFace
@@ -11,6 +12,7 @@ import com.example.crushtestwork.domain.core.errors.NetworkError
 import com.example.crushtestwork.domain.core.errors.getNetworkError
 import com.example.crushtestwork.domain.model.RecordingItem
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -61,6 +63,26 @@ class PlaygroundRecordingsClient(
                 getNetworkError(it)
             },
             mapper = { }
+        )
+    }
+
+    override suspend fun deleteRecording(id: String): ResultFace<Boolean, NetworkError> {
+        return handle.safeApiCall<DeleteRecordingResponseDto, Boolean, NetworkError>(
+            call = {
+                httpClient.delete(
+                    urlString = TestEndpointProvider.getUrl()
+                ) {
+                    url {
+                        parameters.append("path", "delete")
+                        parameters.append("id", id)
+                    }
+                    contentType(ContentType.Application.Json)
+                }
+            },
+            getError = {
+                getNetworkError(it)
+            },
+            mapper = { it.success }
         )
     }
 }

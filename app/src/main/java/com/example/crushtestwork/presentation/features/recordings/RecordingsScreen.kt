@@ -1,6 +1,8 @@
 package com.example.crushtestwork.presentation.features.recordings
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -107,12 +109,16 @@ fun RecordingsScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(horizontal = 10.dp)
             ) {
                 items(state.listOfRecordings) {
                     RecordingItem(
                         recordingItem = it,
                         onEditClicked = {
                             sendEvent(RecordingsScreenEvent.OnModifyRecordingClicked(it.id ?: ""))
+                        },
+                        onDeleteClicked = {
+                            sendEvent(RecordingsScreenEvent.OnDeleteRecordingClicked(it.id ?: ""))
                         }
                     )
                 }
@@ -129,27 +135,43 @@ fun RecordingsScreen(
 @Composable
 private fun RecordingItem(
     recordingItem: RecordingItem,
-    onEditClicked: () -> Unit
+    onEditClicked: () -> Unit,
+    onDeleteClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
+            .padding(vertical = 5.dp)
             .background(
                 shape = RoundedCornerShape(10.dp),
-                color = Color.Cyan
+                color = Color.Magenta
             )
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(text = recordingItem.title)
             Text(text = recordingItem.content)
         }
-        IconButton(
-            onClick = onEditClicked,
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.icon_pen_32),
-                contentDescription = "edit"
-            )
+        Column {
+            IconButton(
+                onClick = onEditClicked,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.icon_pen_32),
+                    contentDescription = "edit"
+                )
+            }
+            IconButton(
+                onClick = onDeleteClicked,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_trash_32),
+                    contentDescription = "remove"
+                )
+            }
         }
     }
 }
